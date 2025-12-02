@@ -15,24 +15,29 @@ const parseInput = (input: string): Range[] => {
 	});
 };
 
-const MATCHER = /^(\d+)\1$/;
-
-function part1(_input: string): number {
-	// const ranges = parseInput(_dummyInput);
-	const ranges = parseInput(_input);
-
+const calcSumOfInvalidIds = (ranges: Range[], matcher: RegExp) => {
 	return ranges.reduce((totalSum, [firstId, lastId]) => {
 		const rangeSum = Array.from({ length: lastId - firstId + 1 }, (_, i) => firstId + i).reduce(
-			(partSum, id) => (MATCHER.test(id.toString()) ? partSum + id : partSum),
+			(partSum, id) => (matcher.test(id.toString()) ? partSum + id : partSum),
 			0,
 		);
 
 		return totalSum + rangeSum;
 	}, 0);
+};
+
+function part1(_input: string): number {
+	// const ranges = parseInput(_dummyInput);
+	const ranges = parseInput(_input);
+
+	return calcSumOfInvalidIds(ranges, /^(\d+)\1$/);
 }
 
 function part2(_input: string): number {
-	return 0;
+	// const ranges = parseInput(_dummyInput);
+	const ranges = parseInput(_input);
+
+	return calcSumOfInvalidIds(ranges, /^(\d+)\1+$/);
 }
 
 console.log('Part 1:', part1(input));
