@@ -11,7 +11,7 @@ if (existsSync(dayFile)) {
 
 mkdirSync('days', { recursive: true });
 
-const template = readFileSync('template.ts', 'utf-8');
+const template = readFileSync('days/template.ts', 'utf-8');
 const dayCode = template.replace('day$X$', `day${day}`);
 
 writeFileSync(dayFile, dayCode);
