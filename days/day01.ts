@@ -49,8 +49,38 @@ function part1(_input: string): number {
 	return state.filter((motion) => motion.endingPos === 0).length;
 }
 
+type ExtendedMotion = Motion & { timesCrossedZeros: number };
+
+const calculateZeroCrossings = (startPos: number, instruction: Instruction): number => {
+	const positions = Array.from({ length: instruction.turns }, (_, i) => {
+		const step = i + 1;
+		return instruction.direction === 'L'
+			? (startPos - step + 100 * Math.ceil(step / 100)) % 100
+			: (startPos + step) % 100;
+	});
+	return positions.filter((pos) => pos === 0).length;
+};
+
 function part2(_input: string): number {
-	return 0;
+	// const instructions = parseInput(dummyInput, ',');
+	const instructions = parseInput(_input);
+
+	const state: ExtendedMotion[] = [
+		{ startingPos: STARTING_POSITION, endingPos: STARTING_POSITION, timesCrossedZeros: 0 },
+	];
+
+	for (const instruction of instructions) {
+		const latestState = state.at(-1) ?? { endingPos: STARTING_POSITION };
+		const newMotion: ExtendedMotion = {
+			...instruction,
+			startingPos: latestState.endingPos,
+			endingPos: calculateEndingPos(latestState.endingPos, instruction),
+			timesCrossedZeros: calculateZeroCrossings(latestState.endingPos, instruction),
+		};
+		state.push(newMotion);
+	}
+
+	return state.reduce((sum, motion) => sum + motion.timesCrossedZeros, 0);
 }
 
 console.log('Part 1:', part1(input));
