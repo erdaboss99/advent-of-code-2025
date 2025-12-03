@@ -28,14 +28,14 @@ const findMaxWithIdx = (bank: Bank): Position => {
 	return { value: max, index: bank.indexOf(max) };
 };
 
-const sumOfBankJoltageDigits = (bank: number[]): number => {
-	return Array.from({ length: 2 }).reduce<{ sum: number; bank: Bank }>(
+const sumOfBankJoltageDigits = (bank: number[], maxDigits: number): number => {
+	return Array.from({ length: maxDigits }).reduce<{ sum: number; bank: Bank }>(
 		(acc, _, idx) => {
-			const slice = getUsableSlice(acc.bank, 2 - idx);
+			const slice = getUsableSlice(acc.bank, maxDigits - idx);
 			const { value, index } = findMaxWithIdx(slice);
 
 			return {
-				sum: acc.sum + value * 10 ** (2 - idx - 1),
+				sum: acc.sum + value * 10 ** (maxDigits - idx - 1),
 				bank: acc.bank.slice(index + 1),
 			};
 		},
@@ -48,12 +48,17 @@ function part1(_input: string): number {
 	const banks = parseInput(_input);
 
 	return banks
-		.map((bank) => sumOfBankJoltageDigits(bank.length % 2 === 0 ? bank : [0, ...bank]))
+		.map((bank) => sumOfBankJoltageDigits(bank.length % 2 === 0 ? bank : [0, ...bank], 2))
 		.reduce((a, b) => a + b, 0);
 }
 
 function part2(_input: string): number {
-	return 0;
+	// const banks = parseInput(_dummyInput);
+	const banks = parseInput(_input);
+
+	return banks
+		.map((bank) => sumOfBankJoltageDigits(bank.length % 2 === 0 ? bank : [0, ...bank], 12))
+		.reduce((a, b) => a + b, 0);
 }
 
 console.log('Part 1:', part1(input));
