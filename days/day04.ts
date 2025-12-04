@@ -55,17 +55,36 @@ const isAccessible = (location: Location, grid: Grid): boolean => {
 	return adjacentLocations.filter((loc) => loc.sign === '@').length < 4;
 };
 
-function part1(_input: string): number {
-	// const grid = parseInput(_dummyInput);
-	const grid = parseInput(_input);
+const sumPossibleMoves = (grid: Grid): number => {
 	return grid.reduce((acc, loc) => {
 		if (isAccessible(loc, grid)) acc++;
 		return acc;
 	}, 0);
+};
+
+function part1(_input: string): number {
+	// const grid = parseInput(_dummyInput);
+	const grid = parseInput(_input);
+	return sumPossibleMoves(grid);
 }
 
+const simulateExecution = (currentGrid: Grid, totalMoves = 0): number => {
+	const moveCount = sumPossibleMoves(currentGrid);
+	if (moveCount === 0) return totalMoves;
+
+	const newGrid = currentGrid.map<Location>((loc) => {
+		if (isAccessible(loc, currentGrid)) return { ...loc, sign: '.' };
+		return loc;
+	});
+
+	return simulateExecution(newGrid, totalMoves + moveCount);
+};
+
 function part2(_input: string): number {
-	return 0;
+	// const grid = parseInput(_dummyInput);
+	const grid = parseInput(_input);
+
+	return simulateExecution(grid);
 }
 
 console.log('Part 1:', part1(input));
