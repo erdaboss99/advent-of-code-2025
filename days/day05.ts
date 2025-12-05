@@ -59,7 +59,13 @@ function part1(_input: string): number {
 }
 
 function part2(_input: string): number {
-	return 0;
+	// const [ranges, _] = parseInput(_dummyInput);
+	const [ranges, _] = parseInput(_input);
+
+	return simplifyRanges(ranges).reduce((acc, range) => {
+		acc += range.end - range.start + 1;
+		return acc;
+	}, 0);
 }
 
 console.log('Part 1:', part1(input));
